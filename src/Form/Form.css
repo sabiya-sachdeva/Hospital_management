@@ -1,0 +1,16 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+.form {
+  text-align: center;
+}
+.formheading {
+  color: rgb(232, 138, 94);
+}
+.namelabel {
+  margin-left: 10%;
+}
+.mobilelabel {
+  margin-left: 5%;
+}

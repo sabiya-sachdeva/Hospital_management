@@ -1,0 +1,9 @@
+.footer{
+  bottom: 0.9rem;
+  /* background-color: rgb(82, 33, 63); */
+  text-align: center;
+}
+* {
+  padding: 0;
+  margin: 0;
+}
