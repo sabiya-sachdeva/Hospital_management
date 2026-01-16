@@ -227,6 +227,7 @@ export default function Navbar() {
         {/* Spacer */}
         <Box sx={{ flexGrow: 1 }} />
 
+
         {/* Search Icon */}
         <IconButton color="inherit" component={Link} to="/search">
           <SearchIcon />
