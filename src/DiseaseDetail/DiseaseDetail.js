@@ -30,8 +30,9 @@ function DiseaseDetail() {
   useEffect(() => {
     const fetchDiseaseDetail = async () => {
       try {
-        const response = await fetch(
-          `http://127.0.0.1:3001/api/diseases/${id}`
+        const response = await fetch(`api/diseases/${id}`
+          // `http://127.0.0.1:3001/api/diseases/${id}`
+        
         );
         if (response.ok) {
           const data = await response.json();

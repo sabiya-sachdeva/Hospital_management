@@ -35,7 +35,7 @@ function Book() {
       
     };
     try {
-      const response = await fetch("http://127.0.0.1:3001/api/appointment", {
+      const response = await fetch("/api/appointment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

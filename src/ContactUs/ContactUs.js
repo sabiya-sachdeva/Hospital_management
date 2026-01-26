@@ -24,7 +24,7 @@ function ContactUs() {
     e.preventDefault();
     try {
       const response = await fetch(
-        "http://127.0.0.1:3001/api/contact",
+        "/api/contact",
 
         {
           method: "POST",

@@ -23,7 +23,7 @@ function Search() {
   const { setSelectedDoctor } = useContext(DoctorContext);
   const getDoctors = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:3001/api/doctors");
+      const response = await axios.get("/api/doctors");
       console.log(response);
       setDoctors(response.data);
     } catch (error) {

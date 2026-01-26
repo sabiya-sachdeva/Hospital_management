@@ -18,7 +18,7 @@ const MedicalSupplies = () => {
   useEffect(() => {
     const data = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:3001/api/medsupplies");
+        const response = await fetch("/api/medsupplies");
         if (response.ok) {
           const data = await response.json();
           setItem(data);
