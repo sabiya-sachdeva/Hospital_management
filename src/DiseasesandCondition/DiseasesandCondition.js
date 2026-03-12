@@ -12,6 +12,28 @@ import {
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 import Footerdetails from "../FooterDetails/Footerdetails";
+
+const DiseaseCard = React.memo(function DiseaseCard({ item, handlereadmore }) {
+  return (
+    <Card key={item.id} sx={{ width: 390, backgroundColor: "lightblue" }}>
+      <CardMedia
+        component="img"
+        height="150"
+        image={item.image}
+        alt=""
+      ></CardMedia>
+      <CardContent>
+        <Typography variant="h5">{item.tittle}</Typography>
+      </CardContent>
+
+      <CardActions>
+        <Button variant="contained" onClick={() => handlereadmore(item.id)}>
+          Read More{" "}
+        </Button>
+      </CardActions>
+    </Card>
+  );
+});
 function DiseaseandCondition() {
   const navigate = useNavigate();
   const handlereadmore = (id) => {
@@ -19,6 +41,7 @@ function DiseaseandCondition() {
   };
   const [cardData, setCardData] = useState([]);
   const [search, setSearch] = useState("");
+
   useEffect(() => {
     const fetchDisease = async () => {
       try {
@@ -71,29 +94,34 @@ function DiseaseandCondition() {
       >
         {filteredDisease.length > 0 ? (
           filteredDisease.map((item) => (
-            <Card
+            <DiseaseCard
               key={item.id}
-              sx={{ width: 390, backgroundColor: "lightblue" }}
-            >
-              <CardMedia
-                component="img"
-                height="150"
-                image={item.image}
-                alt=""
-              ></CardMedia>
-              <CardContent>
-                <Typography variant="h5">{item.tittle}</Typography>
-              </CardContent>
+              item={item}
+              handlereadmore={handlereadmore}
+            />
+            // <Card
+            //   key={item.id}
+            //   sx={{ width: 390, backgroundColor: "lightblue" }}
+            // >
+            //   <CardMedia
+            //     component="img"
+            //     height="150"
+            //     image={item.image}
+            //     alt=""
+            //   ></CardMedia>
+            //   <CardContent>
+            //     <Typography variant="h5">{item.tittle}</Typography>
+            //   </CardContent>
 
-              <CardActions>
-                <Button
-                  variant="contained"
-                  onClick={() => handlereadmore(item.id)}
-                >
-                  Read More{" "}
-                </Button>
-              </CardActions>
-            </Card>
+            //   <CardActions>
+            //     <Button
+            //       variant="contained"
+            //       onClick={() => handlereadmore(item.id)}
+            //     >
+            //       Read More{" "}
+            //     </Button>
+            //   </CardActions>
+            // </Card>
           ))
         ) : (
           <Typography variant="h6" align="center">
