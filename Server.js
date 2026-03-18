@@ -2,14 +2,14 @@ import express from "express";
 
 import router from "./router/auth-router.js";
 import connectDb from "./Database/Db.js";
-import cors from "cors";
+// import cors from "cors";
 
 import dotenv from "dotenv"
 const PORT = process.env.PORT || 3001;
 dotenv.config(); 
 const app = express();
 
-app.use(cors());
+// app.use(cors());
 
 
 
