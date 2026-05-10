@@ -4,11 +4,9 @@ import patientshema from "../Schema/Patient.js";
 import diseases from "../Schema/Disease.js";
 import medicalsupplies from "../Schema/Medicalsupplies.js";
 import appSchema from "../Schema/PatientSchema.js";
+import jwt from "jsonwebtoken";
+import User from "../Schema/User.js";
 const router = Router();
-
-// router.get("/", (req, res) => {
-//   res.send("welcome");
-// });
 
 router.get("/doctors", (req, res) => {
   res.send(doctors);
@@ -41,6 +39,68 @@ router.get("/diseases/:id", (req, res) => {
     return res.status(404).json({ message: "Disease not found" });
   }
 });
+
+router.post("/signup", async (req, res) => {
+  try {
+    const { firstname, lastname, email, password, cpassword } = req.body;
+if(password!=cpassword){
+  return res.status(400).json({
+        message: "Passwords do not match",
+      });
+}
+    const newUser = new User({
+      firstname,
+      lastname,
+      email,
+      password
+     
+    });
+
+    await newUser.save();
+    res.status(201).json({ message: "login Successfully" });
+  } catch (error) {
+    console.log("Signup error");
+  }
+});
+
+router.post("/login",async(req,res)=>{
+  try{
+  const {email,password}=req.body;
+  const founduser=await User.findOne({email});
+  if(!founduser){
+    return res.status(404).json({
+      message:"User not found",
+    })
+  }
+  if(founduser.password!=password){
+    return res.status(401).json({
+      message:"Invalid password"
+    });
+  }
+  const token=jwt.sign({
+    id:founduser._id,
+    email:founduser.email,
+  },
+  "mysecretkey",
+  {
+    expiresIn:"1h",
+  }
+  );
+  res.status(200).json({
+      message: "Login successful",
+      token,
+    });
+
+  } catch (error) {
+
+   
+
+    res.status(500).json({
+      message: "Login error",
+    });
+  }
+});
+
 
 router.post("/contact", async (req, res) => {
   try {
