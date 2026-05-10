@@ -120,7 +120,7 @@ export default function Navbar() {
               },
             }}
           >
-             <MenuItem
+            <MenuItem
               component={Link}
               to="/medsupplies"
               sx={{
@@ -129,7 +129,7 @@ export default function Navbar() {
                 },
               }}
             >
-             Medical Supplies
+              Medical Supplies
             </MenuItem>
             <MenuItem
               component={Link}
@@ -226,7 +226,9 @@ export default function Navbar() {
         </Box>
         {/* Spacer */}
         <Box sx={{ flexGrow: 1 }} />
-
+        <Box component={Link} to="/Login" sx={{ mr: 5 }}>
+          <img src="login.png" alt="login" width={40} />
+        </Box>
 
         {/* Search Icon */}
         <IconButton color="inherit" component={Link} to="/search">
