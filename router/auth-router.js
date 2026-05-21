@@ -5,8 +5,36 @@ import diseases from "../Schema/Disease.js";
 import medicalsupplies from "../Schema/Medicalsupplies.js";
 import appSchema from "../Schema/PatientSchema.js";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 import User from "../Schema/User.js";
+// import transporter from "../utils/sendemail.js";
 const router = Router();
+
+// import dotenv from "dotenv";
+
+const verifyToken = (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+      return res.status(401).json({
+        message: "No token",
+      });
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    req.user = decoded;
+
+    next();
+  } catch (error) {
+    return res.status(401).json({
+      message: "Invalid token",
+    });
+  }
+};
 
 router.get("/doctors", (req, res) => {
   res.send(doctors);
@@ -43,64 +71,113 @@ router.get("/diseases/:id", (req, res) => {
 router.post("/signup", async (req, res) => {
   try {
     const { firstname, lastname, email, password, cpassword } = req.body;
-if(password!=cpassword){
-  return res.status(400).json({
+
+    // Check passwords
+    if (password !== cpassword) {
+      return res.status(400).json({
         message: "Passwords do not match",
       });
-}
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create user
     const newUser = new User({
       firstname,
       lastname,
       email,
-      password
-     
+      password: hashedPassword,
     });
 
     await newUser.save();
-    res.status(201).json({ message: "login Successfully" });
+
+    res.status(201).json({
+      message: "Signup Successfully",
+    });
   } catch (error) {
-    console.log("Signup error");
+    console.log("Signup error", error);
+
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
   }
 });
 
-router.post("/login",async(req,res)=>{
-  try{
-  const {email,password}=req.body;
-  const founduser=await User.findOne({email});
-  if(!founduser){
-    return res.status(404).json({
-      message:"User not found",
-    })
-  }
-  if(founduser.password!=password){
-    return res.status(401).json({
-      message:"Invalid password"
-    });
-  }
-  const token=jwt.sign({
-    id:founduser._id,
-    email:founduser.email,
-  },
-  "mysecretkey",
-  {
-    expiresIn:"1h",
-  }
-  );
-  res.status(200).json({
+// router.post("/login",async(req,res)=>{
+//   try{
+//   const {email,password}=req.body;
+//   const founduser=await User.findOne({email});
+//   if(!founduser){
+//     return res.status(404).json({
+//       message:"User not found",
+//     })
+//   }
+//   if(founduser.password!=password){
+//     return res.status(401).json({
+//       message:"Invalid password"
+//     });
+//   }
+//   const token=jwt.sign({
+//     id:founduser._id,
+//     email:founduser.email,
+//   },
+//   "mysecretkey",
+//   {
+//     expiresIn:"1h",
+//   }
+//   );
+//   res.status(200).json({
+//       message: "Login successful",
+//       token,
+//     });
+
+//   } catch (error) {
+
+//     res.status(500).json({
+//       message: "Login error",
+//     });
+//   }
+// });
+
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const founduser = await User.findOne({ email }).select("+password");
+
+    if (!founduser) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+    const isMatch = await bcrypt.compare(password.trim(), founduser.password);
+    console.log("matching", isMatch);
+
+    if (!isMatch) {
+      return res.status(401).json({
+        message: "Invalid password",
+      });
+    }
+    const token = jwt.sign(
+      {
+        id: founduser._id,
+        email: founduser.email,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      },
+    );
+    res.status(200).json({
       message: "Login successful",
       token,
     });
-
   } catch (error) {
-
-   
-
     res.status(500).json({
       message: "Login error",
     });
   }
 });
-
 
 router.post("/contact", async (req, res) => {
   try {
@@ -118,15 +195,41 @@ router.post("/contact", async (req, res) => {
   }
 });
 
-router.post("/appointment", async (req, res) => {
+router.post("/appointment", verifyToken, async (req, res) => {
   try {
-    const { fullname, date, time } = req.body;
+    const { doctorId, date, time } = req.body;
+    const patient = await User.findById(req.user.id);
+    console.log("patient", patient);
+    const doctor = doctors.find((doc) => doc.id === doctorId);
     const newappointment = new appSchema({
-      fullname,
+      patientemail: patient.email,
+
+      patientfirstname: patient.firstname,
+      patientlastname: patient.lastname,
+      doctorname: doctor.name,
       date,
       time,
     });
     await newappointment.save();
+    // console.log(process.env.EMAIL_USER);
+    // console.log(process.env.EMAIL_PASS);
+//     await transporter.sendMail({
+//       from: process.env.EMAIL_USER,
+      
+//       to: patient.email,
+//       subject: "Appointment Confirmation",
+//       text: `
+// Hello 
+
+// Your appointment has been booked successfully.
+
+// Doctor: ${doctor.name}
+// Date: ${date}
+// Time: ${time}
+
+// Thank you.
+//       `,
+//     });
     res.status(201).json({ message: "appointment booked successfully" });
   } catch (error) {
     console.log("appointment booked error", error);
