@@ -26,6 +26,7 @@ function ContactUs() {
 
       if (response.ok) {
         console.log("data saved");
+        alert("Message saved successfully");
         // console.log(Fullname,Contactno,Message)
         setFormdata({ Fullname: "", Contactno: "", Message: "" });
       } else {

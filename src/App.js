@@ -16,6 +16,7 @@ import Cart from "./Cart.js";
 import Login from "./Login/Login.js";
 import SignUp from "./SignUp/SignUp.js";
 
+
 function App() {
   return (
     <>
@@ -35,6 +36,7 @@ function App() {
         <Route path="/diseases/:id" element={<DiseaseDetail />}></Route>
         <Route path="/Login" element={<Login />}></Route>
         <Route path="/Signup" element={<SignUp/>}></Route>
+       
       </Routes>
       <Footer />
     </>

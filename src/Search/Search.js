@@ -31,6 +31,13 @@ function Search() {
     }
   };
   const handleBook = (doctor) => {
+    const token=localStorage.getItem("token");
+    if(!token){
+      alert ("Please Login to book an appointment");
+      navigate("/login");
+      return;
+    }
+
     setSelectedDoctor(doctor);
 
     navigate(`/book/${doctor.id}`);

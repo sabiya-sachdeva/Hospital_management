@@ -14,7 +14,7 @@ import Footerdetails from "../FooterDetails/Footerdetails";
 function Book() {
   const { selectedDoctor } = useContext(DoctorContext);
   const [appdata, setAppdata] = useState({
-    fullname: "",
+    // fullname: "",
     date: "",
     time: "",
   });
@@ -31,14 +31,19 @@ function Book() {
     }
     const dataToSend = {
       ...appdata,
-      fullname: selectedDoctor.name, // <-- set here
+      // fullname: selectedDoctor.name, // <-- set here
+      doctorId:selectedDoctor.id,
+      date:appdata.date,
+      time:appdata.time,
       
     };
+    const token = localStorage.getItem("token");
     try {
       const response = await fetch("/api/appointment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(dataToSend),
       });

@@ -3,8 +3,11 @@ import { TextField, Box, Button, Paper, Typography } from "@mui/material";
 import React, { useState } from "react";
 import Navbar from "../Navbar/Navbar";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 
 function Login() {
+  const navigate = useNavigate();
   const [formdata, setformData] = useState({
     email: "",
     password: "",
@@ -13,44 +16,32 @@ function Login() {
     setformData({ ...formdata, [e.target.name]: e.target.value });
   };
 
-  const handleclick = async(e) => {
+  const handleclick = async (e) => {
     e.preventDefault();
-    try{
-        const response=await fetch("/api/login",
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json",
-                },
-                body:JSON.stringify(formdata)
-            },
-        );
-        const data = await response.json();
-         if (response.ok) {
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formdata),
+      });
+      const data = await response.json(); //recieve jwt token from backend
+      if (response.ok) {
+        console.log(data);
 
-      console.log(data);
+        // save token
+        localStorage.setItem("token", data.token);
 
-      // save token
-      localStorage.setItem(
-        "token",
-        data.token
-      );
-
-      alert("Login successful");
-
-    } else {
-
-      alert(data.message);
+        alert("Login successful");
+        navigate("/medsupplies");
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.log(error);
     }
-
-  } catch (error) {
-
-    console.log(error);
-  }
-};
-    
-  
-  
+  };
 
   return (
     <div>

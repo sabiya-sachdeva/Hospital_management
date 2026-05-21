@@ -10,16 +10,22 @@ import {
   IconButton,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
+import { Token } from "@mui/icons-material";
 
 export default function Navbar() {
   const [discoverAnchor, setDiscoverAnchor] = useState(null);
   const [medicalAnchor, setMedicalAnchor] = useState(null);
   const [libraryAnchor, setLibraryAnchor] = useState(null);
-
+ const navigate = useNavigate();
   const openMenu = (setter) => (event) => setter(event.currentTarget);
   const closeMenu = (setter) => () => setter(null);
 
+   const handleLogout=()=>{
+    localStorage.removeItem("token");
+    alert("Logged out successfully");
+    navigate("/Login");
+   }
   return (
     <AppBar position="fixed">
       <Toolbar>
@@ -224,11 +230,24 @@ export default function Navbar() {
             </MenuItem>
           </Menu>
         </Box>
+
         {/* Spacer */}
-        <Box sx={{ flexGrow: 1 }} />
-        <Box component={Link} to="/Login" sx={{ mr: 5 }}>
-          <img src="login.png" alt="login" width={40} />
-        </Box>
+          {!Token?(
+        
+        <Box component={Link} to="/Login" sx={{ mr: 5, color:"white", fontWeight:"bold" ,textDecoration:"none"}}>
+        Login
+          {/* <img src="login.png" alt="login" width={30} /> */}
+        </Box>):(<Button
+            color="inherit"
+            sx={{ mr: 5, fontWeight: "bold" }}
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
+        )}
+        {/* <Box component={Link} to="/Logout" sx={{fontWeight:"bold",color:"white",mr:5,textDecoration:"none"}}>
+          Logout
+        </Box> */}
 
         {/* Search Icon */}
         <IconButton color="inherit" component={Link} to="/search">
