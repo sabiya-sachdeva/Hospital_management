@@ -10,22 +10,27 @@ import {
   IconButton,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { Link,useNavigate } from "react-router-dom";
-import { Token } from "@mui/icons-material";
+import { Link, useNavigate } from "react-router-dom";
 
-export default function Navbar() {
+export default function Navbar({ isLoggedInPage }) {
   const [discoverAnchor, setDiscoverAnchor] = useState(null);
   const [medicalAnchor, setMedicalAnchor] = useState(null);
   const [libraryAnchor, setLibraryAnchor] = useState(null);
- const navigate = useNavigate();
+
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem("token");
+
   const openMenu = (setter) => (event) => setter(event.currentTarget);
+
   const closeMenu = (setter) => () => setter(null);
 
-   const handleLogout=()=>{
+  const handleLogout = () => {
     localStorage.removeItem("token");
     alert("Logged out successfully");
     navigate("/Login");
-   }
+  };
+
   return (
     <AppBar position="fixed">
       <Toolbar>
@@ -33,211 +38,180 @@ export default function Navbar() {
         <Box component={Link} to="/" sx={{ mr: 30 }}>
           <img src="/hospitallogo.png" alt="logo" width="90" />
         </Box>
-        <Box sx={{ display: "flex", flexGrow: 1, justifyContent: "center" }}>
-          {/* Discover Dropdown */}
-          <Button
-            color="inherit"
-            sx={{
-              "&:hover": {
-                backgroundColor: "blue",
-              },
-            }}
-            onClick={openMenu(setDiscoverAnchor)}
-            endIcon={<ArrowDropDownOutlinedIcon />}
-          >
-            Discover Vancouver Hospital
-          </Button>
-          <Menu
-            anchorEl={discoverAnchor}
-            open={Boolean(discoverAnchor)}
-            onClose={closeMenu(setDiscoverAnchor)}
-            PaperProps={{
-              sx: {
-                width: discoverAnchor?.offsetWidth,
-              },
-            }}
-          >
-            <MenuItem
-              component={Link}
-              to="/overview"
-              sx={{
-                "&:hover": {
-                  backgroundColor: "bisque",
-                },
-              }}
-            >
-              Overview
-            </MenuItem>
-            <MenuItem
-              component={Link}
-              to="/careers"
-              sx={{
-                "&:hover": {
-                  backgroundColor: "bisque",
-                },
-              }}
-            >
-              Careers
-            </MenuItem>
-            {/* <MenuItem
-              component={Link}
-              to="/medsupplies"
-              sx={{
-                "&:hover": {
-                  backgroundColor: "bisque",
-                },
-              }}
-            >
-              Vision & Mission
-            </MenuItem> */}
-            <MenuItem
-              component={Link}
-              to="/contact"
-              sx={{
-                "&:hover": {
-                  backgroundColor: "bisque",
-                },
-              }}
-            >
-              Contact Us
-            </MenuItem>
-          </Menu>
 
-          {/* Medical Services Dropdown */}
-          <Button
-            color="inherit"
-            sx={{
-              "&:hover": {
-                backgroundColor: "blue",
-              },
-            }}
-            onClick={openMenu(setMedicalAnchor)}
-            endIcon={<ArrowDropDownOutlinedIcon />}
-          >
-            Medical Services
-          </Button>
-          <Menu
-            anchorEl={medicalAnchor}
-            open={Boolean(medicalAnchor)}
-            onClose={closeMenu(setMedicalAnchor)}
-            PaperProps={{
-              sx: {
-                width: discoverAnchor?.offsetWidth,
-              },
-            }}
-          >
-            <MenuItem
-              component={Link}
-              to="/medsupplies"
-              sx={{
-                "&:hover": {
-                  backgroundColor: "bisque",
-                },
-              }}
-            >
-              Medical Supplies
-            </MenuItem>
-            <MenuItem
-              component={Link}
-              to="/center-of-excellence"
-              sx={{
-                "&:hover": {
-                  backgroundColor: "bisque",
-                },
-              }}
-            >
-              Center of Excellence & Specialists
-            </MenuItem>
-            <MenuItem
-              component={Link}
-              to="/surgery"
-              sx={{
-                "&:hover": {
-                  backgroundColor: "bisque",
-                },
-              }}
-            >
-              Surgery
-            </MenuItem>
-            <MenuItem
-              component={Link}
-              to="/radiology"
-              sx={{
-                "&:hover": {
-                  backgroundColor: "bisque",
-                },
-              }}
-            >
-              Radiology
-            </MenuItem>
-          </Menu>
+        {/* Center Menus */}
+        <Box
+          sx={{
+            display: "flex",
+            flexGrow: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {!isLoggedInPage ? (
+            <>
+              {/* Discover Dropdown */}
+              <Button
+                color="inherit"
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "blue",
+                  },
+                }}
+                onClick={openMenu(setDiscoverAnchor)}
+                endIcon={<ArrowDropDownOutlinedIcon />}
+              >
+                Discover Vancouver Hospital
+              </Button>
 
-          {/* Health Library Dropdown */}
-          <Button
-            color="inherit"
-            sx={{
-              "&:hover": {
-                backgroundColor: "blue",
-              },
-            }}
-            onClick={openMenu(setLibraryAnchor)}
-            endIcon={<ArrowDropDownOutlinedIcon />}
-          >
-            Health Library
-          </Button>
-          <Menu
-            anchorEl={libraryAnchor}
-            open={Boolean(libraryAnchor)}
-            onClose={closeMenu(setLibraryAnchor)}
-            PaperProps={{
-              sx: {
-                width: discoverAnchor?.offsetWidth,
-              },
-            }}
-          >
-            <MenuItem
-              component={Link}
-              to="/diseases"
-              sx={{
-                "&:hover": {
-                  backgroundColor: "bisque",
-                },
-              }}
-            >
-              Diseases & Conditions
-            </MenuItem>
-            <MenuItem
-              component={Link}
-              to="/treatments"
-              sx={{
-                "&:hover": {
-                  backgroundColor: "bisque",
-                },
-              }}
-            >
-              Treatments & Procedures
-            </MenuItem>
-            <MenuItem
-              component={Link}
-              to="/symptoms"
-              sx={{
-                "&:hover": {
-                  backgroundColor: "bisque",
-                },
-              }}
-            >
-              Symptoms Guide
-            </MenuItem>
-          </Menu>
+              <Menu
+                anchorEl={discoverAnchor}
+                open={Boolean(discoverAnchor)}
+                onClose={closeMenu(setDiscoverAnchor)}
+              >
+                <MenuItem component={Link} to="/overview">
+                  Overview
+                </MenuItem>
+
+                <MenuItem component={Link} to="/careers">
+                  Careers
+                </MenuItem>
+
+                <MenuItem component={Link} to="/contact">
+                  Contact Us
+                </MenuItem>
+              </Menu>
+
+              {/* Medical Services */}
+              <Button
+                color="inherit"
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "blue",
+                  },
+                }}
+                onClick={openMenu(setMedicalAnchor)}
+                endIcon={<ArrowDropDownOutlinedIcon />}
+              >
+                Medical Services
+              </Button>
+
+              <Menu
+                anchorEl={medicalAnchor}
+                open={Boolean(medicalAnchor)}
+                onClose={closeMenu(setMedicalAnchor)}
+              >
+                <MenuItem component={Link} to="/medsupplies">
+                  Medical Supplies
+                </MenuItem>
+
+                <MenuItem component={Link} to="/center-of-excellence">
+                  Center of Excellence & Specialists
+                </MenuItem>
+
+                <MenuItem component={Link} to="/surgery">
+                  Surgery
+                </MenuItem>
+
+                <MenuItem component={Link} to="/radiology">
+                  Radiology
+                </MenuItem>
+              </Menu>
+
+              {/* Health Library */}
+              <Button
+                color="inherit"
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "blue",
+                  },
+                }}
+                onClick={openMenu(setLibraryAnchor)}
+                endIcon={<ArrowDropDownOutlinedIcon />}
+              >
+                Health Library
+              </Button>
+
+              <Menu
+                anchorEl={libraryAnchor}
+                open={Boolean(libraryAnchor)}
+                onClose={closeMenu(setLibraryAnchor)}
+              >
+                <MenuItem component={Link} to="/diseases">
+                  Diseases & Conditions
+                </MenuItem>
+
+                <MenuItem component={Link} to="/treatments">
+                  Treatments & Procedures
+                </MenuItem>
+
+                <MenuItem component={Link} to="/symptoms">
+                  Symptoms Guide
+                </MenuItem>
+              </Menu>
+            </>
+          ) : (
+            <>
+              {/* Logged In Menus */}
+
+              <Box
+                component={Link}
+                to="/search"
+                sx={{
+                  color: "white",
+                  mr: 5,
+                  textDecoration: "none",
+                  fontWeight: "bold",
+                }}
+              >
+                Doctors
+              </Box>
+
+              <Box
+                component={Link}
+                to="/medsupplies"
+                sx={{
+                  color: "white",
+                  mr: 5,
+                  textDecoration: "none",
+                  fontWeight: "bold",
+                }}
+              >
+                Medical Supplies
+              </Box>
+
+              <Box
+                component={Link}
+                to="/myappointments"
+                sx={{
+                  color: "white",
+                  mr: 5,
+                  textDecoration: "none",
+                  fontWeight: "bold",
+                }}
+              >
+                My Appointments
+              </Box>
+            </>
+          )}
         </Box>
 
-        {/* Spacer */}
-          {!Token?(
-        
-        <Box component={Link} to="/Login" sx={{ mr: 5, color:"white", fontWeight:"bold" ,textDecoration:"none"}}>
-        Login
-          {/* <img src="login.png" alt="login" width={30} /> */}
-        </Box>):(<Button
+        {/* Login / Logout */}
+        {!token ? (
+          <Box
+            component={Link}
+            to="/Login"
+            sx={{
+              mr: 5,
+              color: "white",
+              fontWeight: "bold",
+              textDecoration: "none",
+            }}
+          >
+            Login
+          </Box>
+        ) : (
+          <Button
             color="inherit"
             sx={{ mr: 5, fontWeight: "bold" }}
             onClick={handleLogout}
@@ -245,11 +219,8 @@ export default function Navbar() {
             Logout
           </Button>
         )}
-        {/* <Box component={Link} to="/Logout" sx={{fontWeight:"bold",color:"white",mr:5,textDecoration:"none"}}>
-          Logout
-        </Box> */}
 
-        {/* Search Icon */}
+        {/* Search */}
         <IconButton color="inherit" component={Link} to="/search">
           <SearchIcon />
         </IconButton>

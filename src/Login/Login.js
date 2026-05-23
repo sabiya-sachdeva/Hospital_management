@@ -34,7 +34,7 @@ function Login() {
         localStorage.setItem("token", data.token);
 
         alert("Login successful");
-        navigate("/medsupplies");
+        navigate("/loginhome");
       } else {
         alert(data.message);
       }
