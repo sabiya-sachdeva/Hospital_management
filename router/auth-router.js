@@ -178,6 +178,18 @@ router.get("/myappointments", verifyToken, async (req, res) => {
     });
   }
 });
+router.delete("/cancelappointments/:id",verifyToken,async(req,res)=>{
+  try{
+     const appointmentId=req.params.id;
+     await PatientSchema.findByIdAndDelete(appointmentId);
+     res.status(200).json({
+      message:"Appointment cancelled successfully"
+     })
+  }
+  catch(error){
+    console.log(error);
+  }
+})
 
 router.post("/appointment", verifyToken, async (req, res) => {
   try {
