@@ -18,6 +18,7 @@ function Book() {
     date: "",
     time: "",
   });
+  const [isBooking, setIsBooking] = useState(false);
 
   if (!selectedDoctor) {
     return <Typography sx={{ p: 4 }}>No doctor selected</Typography>;
@@ -25,35 +26,43 @@ function Book() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if ((!appdata.date) || (!appdata.time)) {
+    if (!appdata.date || !appdata.time) {
       alert("Please select date and time");
       return;
     }
+    if (isBooking) {
+      return;
+    }
+    setIsBooking(true);
     const dataToSend = {
       ...appdata,
       // fullname: selectedDoctor.name, // <-- set here
-      doctorId:selectedDoctor.id,
-      date:appdata.date,
-      time:appdata.time,
-      
+      doctorId: selectedDoctor.id,
+      date: appdata.date,
+      time: appdata.time,
     };
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token"); //backend route is protected only authorized user can book appointment so we need to send token in header for verification
     try {
       const response = await fetch("/api/appointment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(dataToSend),
       });
       if (response.ok) {
         console.log("appointment booked");
         setAppdata({ date: "", time: "" });
-        alert("Appointment booked Successfully");
+        alert(response.message);
+      }
+      else{
+        alert("This appointment slot is already booked. Please choose another time or date.")
       }
     } catch (e) {
-      console.log(e);
+      console.log(e.message);
+    } finally {
+      setIsBooking(false);
     }
   };
   const handlechange = (e) => {
@@ -123,8 +132,13 @@ function Book() {
         </Box>
 
         <Box display="flex" justifyContent="center" mb={6}>
-          <Button type="submit" variant="contained" color="primary">
-            Book Appointment
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={isBooking}
+          >
+            {isBooking ? "Booking..." : "Book Appointment"}
           </Button>
         </Box>
       </form>

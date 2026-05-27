@@ -1,6 +1,6 @@
 import { TextField, Box, Button, Paper, Typography } from "@mui/material";
 
-import React, { useState } from "react";
+import React, { useState,useRef,useEffect } from "react";
 import Navbar from "../Navbar/Navbar";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
+  const emailRef=useRef(null);
   const [formdata, setformData] = useState({
     email: "",
     password: "",
@@ -42,7 +43,9 @@ function Login() {
       console.log(error);
     }
   };
-
+useEffect(()=>{
+  emailRef.current.focus();
+},[])
   return (
     <div>
       <Navbar />
@@ -80,6 +83,7 @@ function Login() {
             type="email"
             value={formdata.email}
             onChange={handlechange}
+            inputRef={emailRef}
           />
           <TextField
             label="Password"

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 
 import { useNavigate } from "react-router-dom";
@@ -13,11 +13,13 @@ import {
   CardContent,
   Button,
   CardMedia,
+  TextField,
 } from "@mui/material";
 import Footerdetails from "../FooterDetails/Footerdetails";
 
 function Search() {
   var [Doctors, setDoctors] = useState([]);
+  const [search, setSearch] = useState("");
 
   const navigate = useNavigate();
   const { setSelectedDoctor } = useContext(DoctorContext);
@@ -30,10 +32,16 @@ function Search() {
       console.log(error);
     }
   };
+  const filteredDoctors = useMemo(() => {
+    return Doctors.filter((doctor) =>
+      doctor.name.toLowerCase().includes(search.toLowerCase()),
+    );
+  }, [Doctors, search]);
+
   const handleBook = (doctor) => {
-    const token=localStorage.getItem("token");
-    if(!token){
-      alert ("Please Login to book an appointment");
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please Login to book an appointment");
       navigate("/login");
       return;
     }
@@ -49,14 +57,27 @@ function Search() {
     <div>
       <Navbar />
       <Toolbar />
-      <Typography variant="h3" sx={{ mt: 6, textAlign: "center",mb:5 }}>
+      <Typography variant="h3" sx={{ mt: 6, textAlign: "center", mb: 5 }}>
         Doctors
       </Typography>
 
-
-
-      <Box display="flex" flexWrap="wrap" justifyContent="center" gap={5} mb={5}>
-        {Doctors.map((Doctor, index) => (
+      <Box display="flex" justifyContent="center" mb={5}>
+        <TextField
+          label="Search Doctor by name"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+          }}
+        />
+      </Box>
+      <Box
+        display="flex"
+        flexWrap="wrap"
+        justifyContent="center"
+        gap={5}
+        mb={5}
+      >
+        {filteredDoctors.map((Doctor, index) => (
           <Card>
             <CardMedia
               component="img"
@@ -72,8 +93,9 @@ function Search() {
               <Typography>{Doctor.contact.email}</Typography>
             </CardContent>
 
-            <Button sx={{ display: "block", mx: "auto", mb: 2 }}
-             variant="contained"
+            <Button
+              sx={{ display: "block", mx: "auto", mb: 2 }}
+              variant="contained"
               onClick={() => {
                 handleBook(Doctor);
               }}
