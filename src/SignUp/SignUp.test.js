@@ -18,10 +18,33 @@ test("User can type into input field", async () => {
 
 //form submission
 
-test("form submittes successfully", () => {
-  global.fetch = jest.fn(() => {
-    Promise: resolvePath({
+test("form submits successfully", async () => {
+  global.fetch = jest.fn(() =>  //jest automatically created a fucntion for us like myfunction()
+    Promise.resolve({
       ok: true,
-    });
+      json: () =>
+        Promise.resolve({
+          message: "Signup successful",
+        }),
+    })
+  );
+
+  render(
+    <BrowserRouter>
+      <SignUp />
+    </BrowserRouter>
+  );
+
+  await userEvent.type(
+    screen.getByLabelText(/first name/i),
+    "John"
+  );
+
+  const submitButton = screen.getByRole("button", {
+    name: /signup/i,
   });
+
+  await userEvent.click(submitButton);
+
+  expect(fetch).toHaveBeenCalled();
 });

@@ -1,5 +1,5 @@
 import React from "react";
-import {  Row, Col, Card, Typography } from "antd";
+import { Row, Col, Card, Typography } from "antd";
 const { Link } = Typography;
 function Footerdetails() {
   return (
