@@ -4,7 +4,7 @@ import patientshema from "../Schema/Patient.js";
 import diseases from "../Schema/Disease.js";
 import medicalsupplies from "../Schema/Medicalsupplies.js";
 import appSchema from "../Schema/PatientSchema.js";
- import jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../Schema/User.js";
 import transporter from "../utils/sendemail.js";
@@ -121,7 +121,7 @@ router.post("/login", async (req, res) => {
         message: "Invalid password",
       });
     }
-   
+
     //  jwt token generation
     const token = jwt.sign(
       {
@@ -134,7 +134,7 @@ router.post("/login", async (req, res) => {
       },
     );
     console.log(token);
-   return res.status(200).json({
+    return res.status(200).json({
       message: "Login successful",
       token,
     });
@@ -178,25 +178,36 @@ router.get("/myappointments", verifyToken, async (req, res) => {
     });
   }
 });
-router.delete("/cancelappointments/:id",verifyToken,async(req,res)=>{
-  try{
-     const appointmentId=req.params.id;
-     await PatientSchema.findByIdAndDelete(appointmentId);
-     res.status(200).json({
-      message:"Appointment cancelled successfully"
-     })
-  }
-  catch(error){
+router.delete("/cancelappointments/:id", verifyToken, async (req, res) => {
+  try {
+    const appointmentId = req.params.id;
+    await PatientSchema.findByIdAndUpdate(appointmentId, {
+      status: "Cancelled",
+    });
+    res.status(200).json({
+      message: "Appointment cancelled successfully",
+    });
+  } catch (error) {
     console.log(error);
   }
-})
+});
 
 router.post("/appointment", verifyToken, async (req, res) => {
   try {
     const { doctorId, date, time } = req.body;
     const patient = await User.findById(req.user.id);
-    console.log("patient", patient);
+    // console.log("patient", patient);
     const doctor = doctors.find((doc) => doc.id === doctorId);
+    const existingAppointment = await PatientSchema.findOne({
+      doctorname: doctor.name, //comes from doctor object
+      date, //comes from req.body
+      time, //comes from req.body
+    });
+    if (existingAppointment) {
+      return res.status(400).json({
+        message: "the time slot is already booked",
+      });
+    }
     const newappointment = new appSchema({
       patientemail: patient.email,
 
@@ -207,8 +218,8 @@ router.post("/appointment", verifyToken, async (req, res) => {
       time,
     });
     await newappointment.save();
-    console.log(process.env.EMAIL_USER);
-    console.log(process.env.EMAIL_PASS);
+    // console.log(process.env.EMAIL_USER);
+    // console.log(process.env.EMAIL_PASS);
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: patient.email,
@@ -231,4 +242,37 @@ Thank you.
   }
 });
 
+router.get("/dashboard", verifyToken, async (req, res) => {
+  try {
+    const patient = await User.findById(req.user.id); // when user login in check using middle it returns const token = jwt.sign({
+    //   id: founduser._id,
+    //   email: founduser.email
+    // });   and check if login user is in USer schema
+
+    const appointments = await PatientSchema.find({
+      patientemail: patient.email,
+    });
+    const totalappointment = appointments.length;
+
+    const cancelledAppointments = appointments.filter(
+      (app) => app.status === "Cancelled",
+    );
+    const totalcancelledapp = cancelledAppointments.length;
+
+    const upcomingAppointments = appointments.filter(
+      (app) => app.status === "Booked",
+    ).length;
+    res.status(200).json({
+      firstname: patient.firstname,
+      totalappointment,
+      totalcancelledapp,
+      upcomingAppointments,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Dashboard error",
+    });
+  }
+});
 export default router;

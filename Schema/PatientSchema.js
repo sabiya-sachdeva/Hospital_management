@@ -26,6 +26,10 @@ const appSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+   status: {
+    type: String,
+    default: "Booked",
+  },
 });
 
 export default mongoose.model("PatientSchema", appSchema);
