@@ -35,7 +35,7 @@ function Login() {
         localStorage.setItem("token", data.token);
 
         alert("Login successful");
-        navigate("/loginhome");
+        navigate("/dashboard");
       } else {
         alert(data.message);
       }

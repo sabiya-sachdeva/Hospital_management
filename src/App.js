@@ -17,7 +17,7 @@ import Login from "./Login/Login.js";
 import SignUp from "./SignUp/SignUp.js";
 import Loginhome from "./Welcome/Loginhome.js";
 import Myappointment from "./Myappointments/Myappointment.js";
-
+import PatientDashboard from "./PatientDashboard/PatientDashboard.js";
 
 function App() {
   return (
@@ -37,12 +37,10 @@ function App() {
 
         <Route path="/diseases/:id" element={<DiseaseDetail />}></Route>
         <Route path="/Login" element={<Login />}></Route>
-        <Route path="/Signup" element={<SignUp/>}></Route>
-        <Route path="/loginhome" element={<Loginhome/>}></Route>
-         <Route path="/myappointments" element={<Myappointment/>}></Route>
-        
-
-       
+        <Route path="/Signup" element={<SignUp />}></Route>
+        <Route path="/loginhome" element={<Loginhome />}></Route>
+        <Route path="/myappointments" element={<Myappointment />}></Route>
+        <Route path="/dashboard" element={<PatientDashboard />}></Route>
       </Routes>
       <Footer />
     </>
