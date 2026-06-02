@@ -275,4 +275,41 @@ router.get("/dashboard", verifyToken, async (req, res) => {
     });
   }
 });
+router.get("/appointmentstats", verifyToken, async (req, res) => {
+  try {
+    const patient = await User.findById(req.user.id);
+    const appointments = await PatientSchema.find({
+      patientemail: patient.email,
+    });
+    const montlyStats = {
+      January: 0,
+      February: 0,
+      March: 0,
+      April: 0,
+      May: 0,
+      June: 0,
+      July: 0,
+      August: 0,
+      September: 0,
+      October: 0,
+      November: 0,
+      December: 0,
+    };
+    appointments.forEach((app) => {
+      // console.log(app.date);
+      const month = new Date(app.date).toLocaleString("default", {
+        month: "long",
+      }); //convert string to date
+      montlyStats[month] = montlyStats[month] + 1;
+    });
+    const chardata = Object.entries(montlyStats) // redchart expects an array of object not an object montly stats returns object
+      .map(([month, count]) => ({
+        month: month,
+        appointments: count,
+      }));
+    res.json(chardata);
+  } catch (error) {
+    console.log(error);
+  }
+});
 export default router;

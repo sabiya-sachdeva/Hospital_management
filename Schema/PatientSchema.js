@@ -26,7 +26,7 @@ const appSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-   status: {
+  status: {
     type: String,
     default: "Booked",
   },
