@@ -69,5 +69,28 @@ const doctors = [
       friday: "Closed",
     },
   },
+  {
+    id: "doc004",
+    image: "doctorimage.jpg",
+    name: "Dr. Carol White",
+    specialty: "Dermatology",
+    contact: {
+      phone: "555-555-1212",
+      email: "carol.white@example.com",
+    },
+    address: {
+      street: "789 Pine Ln",
+      city: "Anytown",
+      state: "CA",
+      zip: "90210",
+    },
+    availability: {
+      monday: "Closed",
+      tuesday: "10:00 AM - 6:00 PM",
+      wednesday: "10:00 AM - 6:00 PM",
+      thursday: "10:00 AM - 6:00 PM",
+      friday: "Closed",
+    },
+  },
 ];
 export default doctors;

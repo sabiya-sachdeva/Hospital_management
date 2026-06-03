@@ -69,7 +69,7 @@ router.get("/diseases/:id", (req, res) => {
 
 router.post("/signup", async (req, res) => {
   try {
-    const { firstname, lastname, email, password, cpassword } = req.body;
+    const { firstname, lastname, email, password, cpassword, role } = req.body;
 
     // Check passwords
     if (password !== cpassword) {
@@ -87,12 +87,13 @@ router.post("/signup", async (req, res) => {
       lastname,
       email,
       password: hashedPassword,
+      role,
     });
 
     await newUser.save();
 
     res.status(201).json({
-      message: "Signup Successfully",
+      message: "Sign Up Successfully",
     });
   } catch (error) {
     console.log("Signup error", error);
@@ -127,6 +128,7 @@ router.post("/login", async (req, res) => {
       {
         id: founduser._id,
         email: founduser.email,
+        role: founduser.role,
       },
       process.env.JWT_SECRET,
       {
@@ -137,6 +139,7 @@ router.post("/login", async (req, res) => {
     return res.status(200).json({
       message: "Login successful",
       token,
+      role: founduser.role,
     });
   } catch (error) {
     res.status(500).json({
@@ -197,6 +200,9 @@ router.post("/appointment", verifyToken, async (req, res) => {
     const { doctorId, date, time } = req.body;
     const patient = await User.findById(req.user.id);
     // console.log("patient", patient);
+    //     console.log("doctorId:", doctorId);
+    // console.log("doctorId type:", typeof doctorId);
+    // console.log("doctors:", doctors);
     const doctor = doctors.find((doc) => doc.id === doctorId);
     const existingAppointment = await PatientSchema.findOne({
       doctorname: doctor.name, //comes from doctor object
@@ -214,6 +220,7 @@ router.post("/appointment", verifyToken, async (req, res) => {
       patientfirstname: patient.firstname,
       patientlastname: patient.lastname,
       doctorname: doctor.name,
+      doctoremail: doctor.contact.email,
       date,
       time,
     });
@@ -310,6 +317,23 @@ router.get("/appointmentstats", verifyToken, async (req, res) => {
     res.json(chardata);
   } catch (error) {
     console.log(error);
+  }
+});
+router.get("/doctordashboard", verifyToken, async (req, res) => {
+  try {
+    const doctor = await User.findById(req.user.id);
+    const appointment = await PatientSchema.find({
+      doctoremail: doctor.email,
+    });
+    console.log(appointment)
+
+    return res.status(200).json(appointment);
+  } catch (e) {
+    console.log(e);
+
+    return res.status(500).json({
+      message: "Error fetching appointments",
+    });
   }
 });
 export default router;

@@ -2,33 +2,38 @@ import mongoose from "mongoose";
 // import Patient from "./Patient";
 
 const appSchema = new mongoose.Schema({
-  fullname: {
-    type: String,
-    // required: true,
-  },
-  date: {
-    type: String,
-    required: true,
-  },
-  patientemail: {
-    type: String,
-  },
   patientfirstname: {
     type: String,
   },
   patientlastname: {
     type: String,
   },
-  doctorname: {
+  fullname: {
+    type: String,
+    // required: true,
+  },
+  patientemail: {
     type: String,
   },
+  date: {
+    type: String,
+    required: true,
+  },
+
   time: {
     type: String,
     required: true,
   },
+  doctorname: {
+    type: String,
+  },
+
   status: {
     type: String,
     default: "Booked",
+  },
+  doctoremail: {
+    type: String,
   },
 });
 
