@@ -1,14 +1,13 @@
 import { TextField, Box, Button, Paper, Typography } from "@mui/material";
 
-import React, { useState,useRef,useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Navbar from "../Navbar/Navbar";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-
 function Login() {
   const navigate = useNavigate();
-  const emailRef=useRef(null);
+  const emailRef = useRef(null);
   const [formdata, setformData] = useState({
     email: "",
     password: "",
@@ -35,7 +34,12 @@ function Login() {
         localStorage.setItem("token", data.token);
 
         alert("Login successful");
-        navigate("/dashboard");
+        if (data.role === "patient") {
+          navigate("/dashboard");
+        }
+        if (data.role === "doctor") {
+          navigate("/doctordashboard");
+        }
       } else {
         alert(data.message);
       }
@@ -43,9 +47,9 @@ function Login() {
       console.log(error);
     }
   };
-useEffect(()=>{
-  emailRef.current.focus();
-},[])
+  useEffect(() => {
+    emailRef.current.focus();
+  }, []);
   return (
     <div>
       <Navbar />

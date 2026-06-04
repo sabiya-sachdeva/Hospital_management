@@ -18,6 +18,7 @@ import SignUp from "./SignUp/SignUp.js";
 import Loginhome from "./Welcome/Loginhome.js";
 import Myappointment from "./Myappointments/Myappointment.js";
 import PatientDashboard from "./PatientDashboard/PatientDashboard.js";
+import DoctorDashboard from "./Doctor/DoctorDashboard.js";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
         <Route path="/loginhome" element={<Loginhome />}></Route>
         <Route path="/myappointments" element={<Myappointment />}></Route>
         <Route path="/dashboard" element={<PatientDashboard />}></Route>
+         <Route path="/doctordashboard" element={<DoctorDashboard />}></Route>
       </Routes>
       <Footer />
     </>

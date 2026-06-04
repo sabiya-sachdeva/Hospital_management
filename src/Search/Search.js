@@ -46,7 +46,7 @@ function Search() {
       return;
     }
 
-    setSelectedDoctor(doctor);
+    setSelectedDoctor(doctor); //usecontext hook 
 
     navigate(`/book/${doctor.id}`);
   };

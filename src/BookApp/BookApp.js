@@ -55,9 +55,10 @@ function Book() {
         console.log("appointment booked");
         setAppdata({ date: "", time: "" });
         alert(response.message);
-      }
-      else{
-        alert("This appointment slot is already booked. Please choose another time or date.")
+      } else {
+        alert(
+          "This appointment slot is already booked. Please choose another time or date.",
+        );
       }
     } catch (e) {
       console.log(e.message);
