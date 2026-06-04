@@ -325,7 +325,7 @@ router.get("/doctordashboard", verifyToken, async (req, res) => {
     const appointment = await PatientSchema.find({
       doctoremail: doctor.email,
     });
-    console.log(appointment)
+    // console.log(appointment)
 
     return res.status(200).json(appointment);
   } catch (e) {
@@ -334,6 +334,32 @@ router.get("/doctordashboard", verifyToken, async (req, res) => {
     return res.status(500).json({
       message: "Error fetching appointments",
     });
+  }
+});
+router.put("/appointment/:id/complete", verifyToken, async (req, res) => {
+  try {
+    // console.log("params =", req.params);
+    // console.log("id =", req.params.id);
+    await PatientSchema.findByIdAndUpdate(req.params.id, {
+      status: "Completed",
+    });
+    res.status(200).json({
+      message: "Appointment completed",
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+router.put("/appointment/:id/cancel", verifyToken, async (req, res) => {
+  try {
+    await PatientSchema.findByIdAndUpdate(req.params.id, {
+      status: "Cancelled",
+    });
+    res.status(200).json({
+      message:"Appointment cancelled"
+    })
+  } catch (e) {
+    console.log(e);
   }
 });
 export default router;
