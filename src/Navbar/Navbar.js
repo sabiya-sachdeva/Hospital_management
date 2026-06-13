@@ -73,7 +73,7 @@ export default function Navbar({ isLoggedInPage }) {
                   Overview
                 </MenuItem>
 
-                <MenuItem component={Link} to="/careers">
+                <MenuItem component={Link} to="/adddoctor">
                   Careers
                 </MenuItem>
 

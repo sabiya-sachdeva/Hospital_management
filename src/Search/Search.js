@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 
 import { useNavigate } from "react-router-dom";
+// import AddDoctors from "../Admin/AddDoctors";
 import { DoctorContext } from "../DoctorContext";
 import Navbar from "../Navbar/Navbar";
 import {
@@ -46,9 +47,9 @@ function Search() {
       return;
     }
 
-    setSelectedDoctor(doctor); //usecontext hook 
+    setSelectedDoctor(doctor); //usecontext hook
 
-    navigate(`/book/${doctor.id}`);
+    navigate(`/book/${doctor._id}`);
   };
   useEffect(() => {
     getDoctors();
@@ -82,7 +83,7 @@ function Search() {
             <CardMedia
               component="img"
               height="400"
-              image={Doctor.image}
+              image={`http://127.0.0.1:5000/uploads/${Doctor.image}`}
               alt={Doctor.name}
             ></CardMedia>
 
@@ -90,7 +91,7 @@ function Search() {
             <CardContent>
               <Typography>{Doctor.name}</Typography>
               <Typography>{Doctor.specialty}</Typography>
-              <Typography>{Doctor.contact.email}</Typography>
+              <Typography>{Doctor.email}</Typography>
             </CardContent>
 
             <Button

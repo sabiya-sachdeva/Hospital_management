@@ -40,6 +40,9 @@ function Login() {
         if (data.role === "doctor") {
           navigate("/doctordashboard");
         }
+         if (data.role === "admin") {
+          navigate("/admindashboard");
+        }
       } else {
         alert(data.message);
       }
