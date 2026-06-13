@@ -20,6 +20,7 @@ const PORT = process.env.PORT || 5000;
 //  const PORT = 3001;
 app.use(express.json());
 app.use("/api", router);
+app.use("/uploads", express.static("uploads"));
 
 app.use(express.static("public"));
 

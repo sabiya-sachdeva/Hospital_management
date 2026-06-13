@@ -1,4 +1,4 @@
-import doctors from "../Schema/Doctors.js";
+// import doctors from "../Schema/Doctors.js";
 import { Router } from "express";
 import patientshema from "../Schema/Patient.js";
 import diseases from "../Schema/Disease.js";
@@ -9,6 +9,8 @@ import bcrypt from "bcryptjs";
 import User from "../Schema/User.js";
 import transporter from "../utils/sendemail.js";
 import PatientSchema from "../Schema/PatientSchema.js";
+import Doctordata from "../Schema/Doctorsdata.js";
+import multer from "multer";
 const router = Router();
 
 const verifyToken = (req, res, next) => {
@@ -34,9 +36,31 @@ const verifyToken = (req, res, next) => {
     });
   }
 };
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
 
-router.get("/doctors", (req, res) => {
-  res.send(doctors);
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+const upload = multer({
+  storage,
+});
+router.get("/doctors", async(req, res) => {
+ // res.send(doctors); intially data comes from API now we use mongodb schema to store data and fetch data from database
+
+ try{
+  const doctors=await Doctordata.find();
+  res.status(200).json(doctors);
+
+ }catch(e){
+  console.log(e);
+  res.status(500).json({
+    message:"Server Error"
+ });
+}
 });
 
 router.get("/diseases", (req, res) => {
@@ -356,10 +380,46 @@ router.put("/appointment/:id/cancel", verifyToken, async (req, res) => {
       status: "Cancelled",
     });
     res.status(200).json({
-      message:"Appointment cancelled"
-    })
+      message: "Appointment cancelled",
+    });
   } catch (e) {
     console.log(e);
   }
 });
+router.post("/adddoctor", upload.single("image"), async (req, res) => {
+  // console.log(req.body);
+  // console.log(req.file);
+
+  const doctor = new Doctordata({
+    name: req.body.name,
+    specialty: req.body.specialty,
+    email: req.body.email,
+    phone: req.body.phone,
+    image: req.file.filename,
+  });
+
+  await doctor.save();
+
+  res.status(201).json({
+    message: "Doctor added successfully",
+  });
+});
+router.delete("/deletedoctor/:id",async(req,res)=>{
+  try{
+       const doctor=await Doctordata.findByIdAndDelete(req.params.id);
+       if(!doctor){
+         return res.status(404).json({
+           message: "Doctor not found",
+         });
+       }
+       else{
+        return res.status(200).json({
+          message: "Doctor deleted successfully",
+        });
+       }
+  }
+  catch(e){
+    console.log(e);
+  }
+})
 export default router;
